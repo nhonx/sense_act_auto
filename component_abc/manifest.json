@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Component ABC - Sense Browser Extension",
+  "version": "1.0.0",
+  "description": "Read-only DOM sensor and geometry extractor for Sense/Act browser automation.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "downloads"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Sense/Act Extension"
+  }
+}

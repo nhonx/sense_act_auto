@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Component ABC - Sensor</title>
+  <style>
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      padding: 16px;
+      margin: 0;
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
+    h2 {
+      font-size: 16px;
+      margin-top: 0;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .status-badge.connected {
+      background: #064e3b;
+      color: #34d399;
+    }
+    .status-badge.disconnected {
+      background: #7f1d1d;
+      color: #f87171;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      margin: 6px 0;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #1d4ed8;
+    }
+    pre {
+      background: #1e293b;
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      max-height: 150px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h2>Component ABC (Sensor)</h2>
+  <div id="status" class="status-badge disconnected">WebSocket: Disconnected</div>
+  
+  <button id="btn-analyze" style="background: #0284c7; font-weight: 600;">🔍 Analyze Site & Export JSON</button>
+  <button id="btn-scan">Scan Viewport Elements</button>
+  <button id="btn-geometry">Get Window Geometry</button>
+  <button id="btn-content">Extract Content Text</button>
+
+  <h3>Output Preview:</h3>
+  <pre id="output">Click a button to test sensor functionality.</pre>
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sense/Act Browser System - Test Page</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 20px;
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
+    h1 { color: #38bdf8; }
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .panel {
+      background: #1e293b;
+      padding: 16px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #f8fafc;
+      box-sizing: border-box;
+    }
+    button {
+      background: #2563eb;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:hover { background: #1d4ed8; }
+    #canvas {
+      border: 2px dashed #475569;
+      background: #090d16;
+      border-radius: 6px;
+      cursor: crosshair;
+    }
+    .log-box {
+      background: #020617;
+      padding: 10px;
+      border-radius: 6px;
+      height: 200px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 12px;
+      color: #4ade80;
+    }
+    .trusted-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .trusted-badge.true { background: #15803d; color: #fff; }
+    .trusted-badge.false { background: #b91c1c; color: #fff; }
+  </style>
+</head>
+<body>
+  <h1>Sense/Act Automation System Test Page</h1>
+  <p>Use this page to verify DOM scanning (Component ABC) and real OS-level event trust + mouse paths (Component XYZ).</p>
+
+  <div class="container">
+    <div class="panel">
+      <h2>Interactive Elements (ABC Target)</h2>
+      <label>Test Input 1:</label>
+      <input type="text" id="input1" placeholder="Type here using XYZ actuator..." data-interactive="true">
+
+      <label>Test Textarea:</label>
+      <textarea id="textarea1" rows="3" placeholder="Multi-line input test..."></textarea>
+
+      <button id="btn-save" data-interactive="true">Click Save Target</button>
+      <button id="btn-reset" style="background:#dc2626;">Reset Canvas & Logs</button>
+    </div>
+
+    <div class="panel">
+      <h2>Mouse Trajectory Tracer & Event Verification</h2>
+      <canvas id="canvas" width="400" height="200"></canvas>
+
+      <h3>Event Log (<span id="event-count">0</span> events recorded):</h3>
+      <div id="log" class="log-box"></div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const logEl = document.getElementById('log');
+    let eventCount = 0;
+    let lastPos = null;
+
+    function logEvent(type, isTrusted, details) {
+      eventCount++;
+      document.getElementById('event-count').textContent = eventCount;
+      const entry = document.createElement('div');
+      const badgeClass = isTrusted ? 'true' : 'false';
+      entry.innerHTML = `[${new Date().toLocaleTimeString()}] <b>${type}</b> | isTrusted: <span class="trusted-badge ${badgeClass}">${isTrusted}</span> ${details}`;
+      logEl.prepend(entry);
+    }
+
+    // Listen to mouse moves on canvas and draw trajectory path
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.fillRect(x, y, 2, 2);
+
+      if (lastPos) {
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+        ctx.moveTo(lastPos.x, lastPos.y);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
+      lastPos = { x, y };
+
+      logEvent('mousemove', e.isTrusted, `x: ${Math.round(e.clientX)}, y: ${Math.round(e.clientY)}`);
+    });
+
+    // Listen to clicks on buttons & input focus
+    document.getElementById('btn-save').addEventListener('click', (e) => {
+      logEvent('click [Save]', e.isTrusted, 'Save button clicked');
+      alert(`Save clicked! Event isTrusted: ${e.isTrusted}`);
+    });
+
+    document.getElementById('input1').addEventListener('input', (e) => {
+      logEvent('input', e.isTrusted, `val: "${e.target.value}"`);
+    });
+
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      logEl.innerHTML = '';
+      eventCount = 0;
+      document.getElementById('event-count').textContent = '0';
+      lastPos = null;
+    });
+  </script>
+</body>
+</html>
